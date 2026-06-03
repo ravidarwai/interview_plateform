@@ -1,0 +1,42 @@
+services:
+  # ----------------------------------------------------
+  # 1. Backend Web Service
+  # ----------------------------------------------------
+  - type: web
+    name: interview-plateform-backend
+    runtime: node
+    plan: free
+    rootDir: Backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false  # You will enter your MongoDB Atlas connection string in the Render UI
+      - key: GOOGLE_GENAI_API_KEY
+        sync: false  # You will enter your Google Gemini API key in the Render UI
+      - key: JWT_SECRET
+        sync: false  # You will enter your JWT secret in the Render UI
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: interview-plateform-frontend
+          property: url
+
+  # ----------------------------------------------------
+  # 2. Frontend Static Site
+  # ----------------------------------------------------
+  - type: web
+    name: interview-plateform-frontend
+    runtime: static
+    plan: free
+    rootDir: Frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: interview-plateform-backend
+          property: url
