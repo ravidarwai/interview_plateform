@@ -1,0 +1,741 @@
+@use "sass:color";
+@use "sass:map";
+@use "sass:math";
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DESIGN TOKENS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+ $tokens: (
+    "bg-page": #0d1117,
+    "bg-card": #161b22,
+    "bg-panel": #1c2230,
+    "bg-input": #1e2535,
+    "bg-hover": #232b3e,
+    "border": #2a3348,
+    "border-hover": #3a4560,
+    "text-primary": #e6edf3,
+    "text-secondary": #b0b8c4,
+    "text-muted": #7d8590,
+    "accent": #ff2d78,
+    "accent-subtle": rgba(#ff2d78, 0.1),
+    "accent-border": rgba(#ff2d78, 0.2),
+);
+
+ $severity: (
+    "high": #ff4d4d,
+    "medium": #f5a623,
+    "low": #3fb950,
+);
+
+ $tag-colors: (
+    "intention": (color: #a78bfa, bg: rgba(#a78bfa, 0.1), border: rgba(#a78bfa, 0.2)),
+    "answer": (color: #3fb950, bg: rgba(#3fb950, 0.1), border: rgba(#3fb950, 0.2)),
+);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SPACING & TYPOGRAPHY SCALES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+ $space: (
+    "xs": 0.25rem,
+    "sm": 0.5rem,
+    "md": 0.75rem,
+    "lg": 1rem,
+    "xl": 1.25rem,
+    "2xl": 1.5rem,
+    "3xl": 1.75rem,
+    "4xl": 2rem,
+);
+
+ $font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+ $text: (
+    "xs": 0.68rem,
+    "sm": 0.75rem,
+    "base": 0.875rem,
+    "lg": 0.9rem,
+    "xl": 0.95rem,
+    "2xl": 1.1rem,
+    "3xl": 1.6rem,
+);
+
+ $radius: (
+    "sm": 0.25rem,
+    "md": 0.4rem,
+    "lg": 0.5rem,
+    "xl": 0.6rem,
+    "2xl": 1rem,
+    "full": 2rem,
+);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BREAKPOINTS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+ $breakpoints: (
+    "sm": 640px,
+    "md": 768px,
+    "lg": 1024px,
+    "xl": 1280px,
+);
+
+@mixin respond-to($key) {
+    $bp: map.get($breakpoints, $key);
+    @if $bp {
+        @media (max-width: $bp) {
+            @content;
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MIXINS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@mixin reset-scrollbar {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    scrollbar-width: none;
+}
+
+@mixin focus-ring($color: map.get($tokens, "accent")) {
+    outline: none;
+    box-shadow: 0 0 0 2px map.get($tokens, "bg-card"), 0 0 0 4px rgba($color, 0.4);
+
+    @media (prefers-reduced-motion: no-preference) {
+        transition: box-shadow 0.15s ease;
+    }
+}
+
+@mixin interactive-base {
+    cursor: pointer;
+    user-select: none;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.2s ease;
+
+    &:focus-visible {
+        @include focus-ring;
+    }
+}
+
+@mixin label-base {
+    font-size: map.get($text, "sm");
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: map.get($tokens, "text-muted");
+    margin: 0;
+}
+
+@mixin badge-base($color, $bg, $border) {
+    font-size: map.get($text, "sm");
+    font-weight: 700;
+    color: $color;
+    background-color: $bg;
+    border: 1px solid $border;
+    padding: 0.1rem 0.5rem;
+    border-radius: map.get($radius, "full");
+    width: fit-content;
+}
+
+@mixin card-base {
+    background-color: map.get($tokens, "bg-panel");
+    border: 1px solid map.get($tokens, "border");
+    border-radius: map.get($radius, "xl");
+
+    @media (prefers-reduced-motion: no-preference) {
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    &:hover {
+        border-color: map.get($tokens, "border-hover");
+    }
+}
+
+@mixin truncate($lines: 1) {
+    @if $lines == 1 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    } @else {
+        display: -webkit-box;
+        -webkit-line-clamp: $lines;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PLACEHOLDERS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+%panel-section {
+    display: flex;
+    flex-direction: column;
+    gap: map.get($space, "md");
+}
+
+%flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+%visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@mixin animate-in($property: opacity, $from: 0, $to: 1, $duration: 0.2s) {
+    @keyframes animate-in-#{$property} {
+        from { #{$property}: $from; }
+        to { #{$property}: $to; }
+    }
+    animation: animate-in-#{$property} $duration ease-out;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BASE RESETS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+* {
+    @include reset-scrollbar;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PAGE SHELL
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.interview-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: map.get($tokens, "bg-page");
+    color: map.get($tokens, "text-primary");
+    font-family: $font-stack;
+    display: flex;
+    align-items: stretch;
+    padding: map.get($space, "2xl");
+    box-sizing: border-box;
+
+    @include respond-to("sm") {
+        padding: map.get($space, "md");
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 3-COLUMN LAYOUT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.interview-layout {
+    display: flex;
+    width: 100%;
+    max-width: map.get($breakpoints, "xl");
+    margin: 0 auto;
+    background-color: map.get($tokens, "bg-card");
+    border: 1px solid map.get($tokens, "border");
+    border-radius: map.get($radius, "2xl");
+    overflow: hidden;
+
+    @include respond-to("lg") {
+        flex-direction: column;
+        border-radius: map.get($radius, "xl");
+    }
+}
+
+.interview-divider {
+    width: 1px;
+    background-color: map.get($tokens, "border");
+    flex-shrink: 0;
+
+    @include respond-to("lg") {
+        width: 100%;
+        height: 1px;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LEFT NAV
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.interview-nav {
+    width: 220px;
+    flex-shrink: 0;
+    padding: map.get($space, "3xl") map.get($space, "lg");
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: map.get($space, "xs");
+
+    @include respond-to("lg") {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: map.get($space, "lg");
+        gap: map.get($space, "sm");
+    }
+
+    &__label {
+        font-size: map.get($text, "xs");
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: map.get($tokens, "text-muted");
+        padding: 0 map.get($space, "md");
+        margin-bottom: map.get($space, "sm");
+
+        @include respond-to("lg") {
+            width: 100%;
+            margin-bottom: 0;
+            padding: 0;
+        }
+    }
+
+    .nav-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: map.get($space, "sm");
+        margin-bottom: map.get($space, "lg");
+    }
+
+    .logout-button {
+        background-color: map.get($tokens, "text-primary");
+        color: #fff;
+        min-width: 96px;
+        border-radius: map.get($radius, "xl");
+        padding: map.get($space, "md") map.get($space, "lg");
+        border: none;
+    }
+
+    &__item {
+        @include interactive-base;
+        display: flex;
+        align-items: center;
+        gap: map.get($space, "md");
+        width: 100%;
+        padding: map.get($space, "md") map.get($space, "md");
+        background: none;
+        border: 1px solid transparent;
+        border-radius: map.get($radius, "lg");
+        color: map.get($tokens, "text-muted");
+        font-family: $font-stack;
+        font-size: map.get($text, "base");
+        text-align: left;
+
+        &:hover {
+            background-color: map.get($tokens, "bg-panel");
+            color: map.get($tokens, "text-primary");
+        }
+
+        &--active {
+            background-color: map.get($tokens, "accent-subtle");
+            color: map.get($tokens, "accent");
+            border-color: map.get($tokens, "accent-border");
+
+            .interview-nav__icon svg {
+                stroke: map.get($tokens, "accent");
+            }
+        }
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CENTER CONTENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.interview-content {
+    flex: 1;
+    padding: map.get($space, "3xl") map.get($space, "4xl");
+    padding-bottom: 5rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 3rem);
+    align-items: flex-start;
+
+    @include respond-to("md") {
+        padding: map.get($space, "2xl");
+        max-height: none;
+    }
+
+    section {
+        min-height: 100%;
+    }
+}
+
+// ── Content Header ────────────────────────────────────────────────────────────
+
+.content-header {
+    display: flex;
+    align-items: baseline;
+    gap: map.get($space, "md");
+    margin-bottom: map.get($space, "2xl");
+    padding-bottom: map.get($space, "lg");
+    border-bottom: 1px solid map.get($tokens, "border");
+
+    h2 {
+        font-size: map.get($text, "2xl");
+        font-weight: 700;
+        color: map.get($tokens, "text-primary");
+        margin: 0;
+    }
+
+    &__count {
+        font-size: map.get($text, "sm");
+        color: map.get($tokens, "text-muted");
+        background-color: map.get($tokens, "bg-panel");
+        padding: map.get($space, "xs") map.get($space, "md");
+        border-radius: map.get($radius, "full");
+        border: 1px solid map.get($tokens, "border");
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// QUESTION CARDS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.q-list {
+    display: flex;
+    flex-direction: column;
+    gap: map.get($space, "md");
+}
+
+.q-card {
+    @include card-base;
+    overflow: hidden;
+
+    &__header {
+        @include interactive-base;
+        display: flex;
+        align-items: flex-start;
+        gap: map.get($space, "md");
+        padding: map.get($space, "lg") map.get($space, "lg");
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+        font-family: inherit;
+        color: inherit;
+    }
+
+    &__index {
+        flex-shrink: 0;
+        font-size: map.get($text, "xs");
+        font-weight: 700;
+        color: map.get($tokens, "accent");
+        background-color: map.get($tokens, "accent-subtle");
+        border: 1px solid map.get($tokens, "accent-border");
+        border-radius: map.get($radius, "sm");
+        padding: map.get($space, "xs") map.get($space, "sm");
+        margin-top: 2px;
+    }
+
+    &__question {
+        flex: 1;
+        margin: 0;
+        font-size: map.get($text, "lg");
+        font-weight: 500;
+        color: map.get($tokens, "text-primary");
+        line-height: 1.5;
+    }
+
+    &__chevron {
+        flex-shrink: 0;
+        color: map.get($tokens, "text-muted");
+        margin-top: 2px;
+
+        @media (prefers-reduced-motion: no-preference) {
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        &--open {
+            transform: rotate(180deg);
+            color: map.get($tokens, "accent");
+        }
+    }
+
+    &__body {
+        padding: 0 map.get($space, "lg") map.get($space, "lg");
+        display: flex;
+        flex-direction: column;
+        gap: map.get($space, "md");
+        border-top: 1px solid map.get($tokens, "border");
+        padding-top: map.get($space, "md");
+
+        @media (prefers-reduced-motion: no-preference) {
+            @include animate-in(opacity, 0, 1, 0.2s);
+        }
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: map.get($space, "sm");
+
+        p {
+            margin: 0;
+            font-size: 0.835rem;
+            color: map.get($tokens, "text-secondary");
+            line-height: 1.6;
+        }
+    }
+
+    &__tag {
+        font-size: map.get($text, "xs");
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: map.get($space, "xs") map.get($space, "md");
+        border-radius: map.get($radius, "sm");
+
+        @each $name, $colors in $tag-colors {
+            &--#{$name} {
+                @include badge-base(
+                    map.get($colors, "color"),
+                    map.get($colors, "bg"),
+                    map.get($colors, "border")
+                );
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ROADMAP
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.roadmap-list {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 28px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(
+            to bottom,
+            map.get($tokens, "accent"),
+            map.get($tokens, "accent-subtle")
+        );
+        border-radius: 1px;
+    }
+}
+
+.roadmap-day {
+    display: flex;
+    flex-direction: column;
+    gap: map.get($space, "sm");
+    padding: map.get($space, "md") 0 map.get($space, "md") 3.5rem;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 21px;
+        top: 1.05rem;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background-color: map.get($tokens, "bg-card");
+        border: 2px solid map.get($tokens, "accent");
+
+        @media (prefers-reduced-motion: no-preference) {
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+    }
+
+    &:hover::before {
+        background-color: map.get($tokens, "accent");
+        box-shadow: 0 0 0 4px map.get($tokens, "accent-subtle");
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: map.get($space, "md");
+    }
+
+    &__badge {
+        @include badge-base(
+            map.get($tokens, "accent"),
+            map.get($tokens, "accent-subtle"),
+            rgba(map.get($tokens, "accent"), 0.25)
+        );
+    }
+
+    &__focus {
+        margin: 0;
+        font-size: map.get($text, "xl");
+        font-weight: 600;
+        color: map.get($tokens, "text-primary");
+    }
+
+    &__tasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: map.get($space, "sm");
+
+        li {
+            display: flex;
+            align-items: flex-start;
+            gap: map.get($space, "sm");
+            font-size: 0.845rem;
+            color: map.get($tokens, "text-secondary");
+            line-height: 1.5;
+        }
+    }
+
+    &__bullet {
+        flex-shrink: 0;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: map.get($tokens, "text-muted");
+        margin-top: 8px;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RIGHT SIDEBAR
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.interview-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    padding: map.get($space, "3xl") map.get($space, "xl");
+    display: flex;
+    flex-direction: column;
+    gap: map.get($space, "xl");
+
+    @include respond-to("lg") {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: map.get($space, "lg");
+    }
+}
+
+.sidebar-divider {
+    height: 1px;
+    background-color: map.get($tokens, "border");
+
+    @include respond-to("lg") {
+        display: none;
+    }
+}
+
+// ── Match Score ───────────────────────────────────────────────────────────────
+
+.match-score {
+    @extend %panel-section;
+    align-items: center;
+
+    @include respond-to("lg") {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    &__label {
+        @include label-base;
+        align-self: flex-start;
+    }
+
+    &__ring {
+        @extend %flex-center;
+        flex-direction: column;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 4px solid;
+
+        @each $level, $color in $severity {
+            &.score--#{$level} {
+                border-color: $color;
+            }
+        }
+    }
+
+    &__value {
+        font-size: map.get($text, "3xl");
+        font-weight: 800;
+        color: map.get($tokens, "text-primary");
+        line-height: 1;
+    }
+
+    &__pct {
+        font-size: map.get($text, "sm");
+        color: map.get($tokens, "text-muted");
+        margin-top: -2px;
+    }
+
+    &__sub {
+        margin: 0;
+        font-size: map.get($text, "sm");
+        color: map.get($severity, "low");
+        text-align: center;
+    }
+}
+
+// ── Skill Gaps ────────────────────────────────────────────────────────────────
+
+.skill-gaps {
+    @extend %panel-section;
+
+    @include respond-to("lg") {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    &__label {
+        @include label-base;
+    }
+
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: map.get($space, "sm");
+    }
+}
+
+.skill-tag {
+    font-size: 0.775rem;
+    font-weight: 500;
+    padding: map.get($space, "sm") map.get($space, "md");
+    border-radius: map.get($radius, "md");
+    border: 1px solid;
+    cursor: default;
+
+    @each $level, $color in $severity {
+        &--#{$level} {
+            color: $color;
+            background-color: rgba($color, 0.1);
+            border-color: rgba($color, 0.25);
+        }
+    }
+}

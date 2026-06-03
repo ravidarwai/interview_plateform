@@ -1,0 +1,112 @@
+// @use "./style/button.scss";
+
+// * {
+//     margin: 0%;
+//     padding: 0%;
+//     box-sizing: border-box;
+// }
+
+// html,
+// body,
+// #root {
+//     width: 100%;
+//     background-color: #161616;
+//     color: whitesmoke;
+//     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+// }
+
+// .highlight{
+//     color: #d20d3b;
+// }
+
+
+@use "./style/button";
+
+// CSS Reset
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// Root setup for responsive scaling
+html {
+  font-size: 14px; // Mobile base
+
+  @media (min-width: 768px) {
+    font-size: 15px; // Tablet
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 16px; // Laptop
+  }
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #161616;
+  color: #f5f5f5;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+// Responsive container spacing
+#root {
+  padding-inline: 1rem;
+
+  @media (min-width: 768px) {
+    padding-inline: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding-inline: 3rem;
+    max-width: 1440px;
+    margin-inline: auto;
+  }
+}
+
+.highlight {
+  color: #d20d3b;
+}
+
+// Responsive typography helpers
+h1, .h1 {
+  font-size: 1.75rem;
+
+  @media (min-width: 768px) {
+    font-size: 2.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 3rem;
+  }
+}
+
+h2, .h2 {
+  font-size: 1.5rem;
+
+  @media (min-width: 768px) {
+    font-size: 1.875rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 2.25rem;
+  }
+}
+
+p, .body-text {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
