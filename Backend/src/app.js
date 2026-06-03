@@ -15,6 +15,10 @@ app.use(cors({
     credentials: true
 }))
 
+app.get("/", (req, res) => {
+    res.json({ message: "Server is running successfully!" })
+})
+
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")
