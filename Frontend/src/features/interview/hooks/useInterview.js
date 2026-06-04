@@ -61,18 +61,34 @@ export const useInterview = () => {
 
     const getResumePdf = async (interviewReportId) => {
         setLoading(true)
-        let response = null
         try {
-            response = await generateResumePdf({ interviewReportId })
-            const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
-            const link = document.createElement("a")
-            link.href = url
-            link.setAttribute("download", `resume_${interviewReportId}.pdf`)
-            document.body.appendChild(link)
-            link.click()
+            const data = await generateResumePdf({ interviewReportId })
+            const htmlContent = data.html
+
+            // Create temporary container element to hold resume HTML for rendering
+            const element = document.createElement("div")
+            element.innerHTML = htmlContent
+            
+            element.style.padding = "20px"
+            element.style.fontFamily = "system-ui, -apple-system, sans-serif"
+            element.style.color = "#333"
+            element.style.backgroundColor = "#fff"
+
+            // Import html2pdf dynamically
+            const html2pdf = (await import("html2pdf.js/dist/html2pdf.min.js")).default
+
+            const opt = {
+                margin:       15,
+                filename:     `resume_${interviewReportId}.pdf`,
+                image:        { type: "jpeg", quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" }
+            }
+
+            await html2pdf().set(opt).from(element).save()
         }
         catch (error) {
-            console.log(error)
+            console.error("Error generating or downloading PDF:", error)
         } finally {
             setLoading(false)
         }
