@@ -1,5 +1,7 @@
 # AI Mock Interview & Preparation Platform
 
+[![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/ravidarwai/interview_plateform)
+
 An AI-powered preparation platform designed to help users prep for job interviews. By analyzing the user's resume, self-description, and target job description, the platform generates mock technical & behavioral questions, rates resume-job match scores, flags skill gaps, and prepares a tailored day-by-day learning roadmap.
 
 ---
