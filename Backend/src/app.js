@@ -32,7 +32,7 @@ app.use("/api/interview", interviewRouter)
 app.use(express.static(path.join(__dirname, "..", "public")))
 
 /* SPA fallback: any unknown route serves index.html */
-app.get("*", (req, res) => {
+app.get("/{*path}", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "public", "index.html"))
 })
 
