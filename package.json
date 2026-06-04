@@ -1,0 +1,16 @@
+{
+  "name": "interview-ai-monolith",
+  "version": "1.0.0",
+  "description": "AI Mock Interview & Preparation Platform Monolith",
+  "main": "Backend/server.js",
+  "scripts": {
+    "install-backend": "npm install --prefix Backend",
+    "install-frontend": "npm install --prefix Frontend",
+    "build-frontend": "npm run build --prefix Frontend",
+    "build": "npm run install-backend && npm run install-frontend && npm run build-frontend",
+    "start": "node Backend/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

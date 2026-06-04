@@ -1,6 +1,7 @@
 const express = require("express")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const path = require("path")
 
 const app = express()
 
@@ -18,10 +19,6 @@ app.use(cors({
     credentials: true
 }))
 
-app.get("/", (req, res) => {
-    res.json({ message: "Server is running successfully!" })
-})
-
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")
@@ -31,6 +28,13 @@ const interviewRouter = require("./routes/interview.routes")
 app.use("/api/auth", authRouter)
 app.use("/api/interview", interviewRouter)
 
+/* Serve React frontend static files */
+app.use(express.static(path.join(__dirname, "..", "public")))
+
+/* SPA fallback: any unknown route serves index.html */
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "public", "index.html"))
+})
 
 
 module.exports = app
