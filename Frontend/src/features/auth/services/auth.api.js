@@ -63,3 +63,21 @@ export async function getMe() {
     }
 
 }
+
+export async function forgotPassword({ email }) {
+    try {
+        const response = await api.post('/api/auth/forgot-password', { email })
+        return response.data
+    } catch (err) {
+        throw new Error(err.response?.data?.message || "Something went wrong. Please try again.")
+    }
+}
+
+export async function resetPassword({ token, password }) {
+    try {
+        const response = await api.post('/api/auth/reset-password', { token, password })
+        return response.data
+    } catch (err) {
+        throw new Error(err.response?.data?.message || "Something went wrong. Please try again.")
+    }
+}
